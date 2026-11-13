@@ -1,0 +1,480 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login Hours Calculator</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 25px;
+    color: white;
+    background: radial-gradient(circle at top left, #263d73, #101426 55%, #080b16);
+    overflow-x: hidden;
+}
+
+/* Floating background objects */
+.orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(2px);
+    opacity: 0.5;
+    animation: float 6s ease-in-out infinite;
+    pointer-events: none;
+}
+
+.orb.one {
+    width: 180px;
+    height: 180px;
+    background: linear-gradient(135deg, #8b5cf6, #2563eb);
+    top: 8%;
+    left: 8%;
+}
+
+.orb.two {
+    width: 130px;
+    height: 130px;
+    background: linear-gradient(135deg, #06b6d4, #6366f1);
+    bottom: 10%;
+    right: 10%;
+    animation-delay: 2s;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-30px) rotate(12deg); }
+}
+
+/* Main dashboard */
+.container {
+    width: 100%;
+    max-width: 480px;
+    padding: 35px;
+    border-radius: 25px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.16);
+    backdrop-filter: blur(20px);
+    box-shadow:
+        0 25px 60px rgba(0,0,0,0.4),
+        inset 0 1px 1px rgba(255,255,255,0.15);
+    transform-style: preserve-3d;
+    animation: appear 0.8s ease;
+    transition: transform 0.3s ease;
+    position: relative;
+    z-index: 1;
+}
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        transform: translateY(40px) rotateX(8deg);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) rotateX(0);
+    }
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header .icon {
+    font-size: 42px;
+    margin-bottom: 12px;
+    display: inline-block;
+    filter: drop-shadow(0 5px 12px #8b5cf6);
+}
+
+.header h1 {
+    font-size: 27px;
+    margin-bottom: 8px;
+}
+
+.header p {
+    color: #aeb9d4;
+    font-size: 13px;
+}
+
+.field {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    margin-bottom: 9px;
+    font-size: 13px;
+    color: #cbd5e1;
+    font-weight: 600;
+}
+
+input {
+    width: 100%;
+    padding: 14px 15px;
+    background: rgba(10,15,35,0.7);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    outline: none;
+    transition: 0.3s;
+    color-scheme: dark;
+}
+
+input:focus {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 15px rgba(139,92,246,0.25);
+}
+
+.row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 5px;
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    background: linear-gradient(120deg, #7c3aed, #2563eb);
+    box-shadow: 0 8px 20px rgba(79,70,229,0.35);
+    transition: 0.3s;
+}
+
+button:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 25px rgba(79,70,229,0.5);
+}
+
+.result {
+    display: none;
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 16px;
+    background: rgba(15,23,42,0.75);
+    border: 1px solid rgba(139,92,246,0.3);
+    animation: appear 0.5s ease;
+}
+
+.result h2 {
+    font-size: 16px;
+    color: #c4b5fd;
+    margin-bottom: 15px;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin: 14px 0;
+    font-size: 14px;
+    color: #cbd5e1;
+}
+
+.result-item strong {
+    color: white;
+    text-align: right;
+}
+
+.highlight {
+    color: #a78bfa !important;
+    font-size: 20px;
+}
+
+.progress-bg {
+    width: 100%;
+    height: 10px;
+    background: #29334c;
+    border-radius: 20px;
+    margin: 15px 0;
+    overflow: hidden;
+}
+
+.progress {
+    height: 100%;
+    width: 0%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, #8b5cf6, #06b6d4);
+    transition: width 0.7s ease;
+}
+
+.countdown {
+    text-align: center;
+    margin-top: 20px;
+    padding: 16px;
+    background: rgba(139,92,246,0.12);
+    border-radius: 12px;
+}
+
+.countdown small {
+    color: #aeb9d4;
+}
+
+.countdown h2 {
+    margin-top: 8px;
+    color: #67e8f9;
+    font-size: 25px;
+}
+
+.message {
+    text-align: center;
+    color: #67e8f9;
+    margin-top: 15px;
+    font-size: 13px;
+}
+
+.error {
+    color: #fca5a5;
+    font-size: 13px;
+    margin-top: 12px;
+    text-align: center;
+}
+
+.footer {
+    text-align: center;
+    margin-top: 22px;
+    font-size: 11px;
+    color: #8995b2;
+}
+
+@media(max-width: 480px) {
+    .container {
+        padding: 23px;
+    }
+    .header h1 {
+        font-size: 23px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="orb one"></div>
+<div class="orb two"></div>
+
+<div class="container">
+
+    <div class="header">
+        <div class="icon">⏱️</div>
+        <h1>Login Hours Calculator</h1>
+        <p>Track your work hours. Stay on target.</p>
+    </div>
+
+    <div class="field">
+        <label>Already Completed Hours</label>
+        <div class="row">
+            <input type="number" id="hours" placeholder="Hours" min="0" value="4">
+            <input type="number" id="minutes" placeholder="Minutes" min="0" max="59" value="0">
+        </div>
+    </div>
+
+    <div class="field">
+        <label>Current Login Time</label>
+        <input type="time" id="loginTime">
+    </div>
+
+    <div class="field">
+        <label>Daily Target (Hours)</label>
+        <input type="number" id="target" value="8" min="0.1" step="0.5">
+    </div>
+
+    <button onclick="calculateHours()">Calculate My Login Hours ✨</button>
+
+    <div class="error" id="error"></div>
+
+    <div class="result" id="result">
+
+        <h2>📊 Your Work Summary</h2>
+
+        <div class="result-item">
+            <span>Already Completed</span>
+            <strong id="completed">4h 0m</strong>
+        </div>
+
+        <div class="result-item">
+            <span>Remaining Hours</span>
+            <strong id="remaining">4h 0m</strong>
+        </div>
+
+        <div class="result-item">
+            <span>Daily Target</span>
+            <strong id="dailyTarget">8h</strong>
+        </div>
+
+        <div class="result-item">
+            <span>Expected Completion</span>
+            <strong class="highlight" id="finishTime">--:--</strong>
+        </div>
+
+        <div class="progress-bg">
+            <div class="progress" id="progress"></div>
+        </div>
+
+        <div class="result-item">
+            <span>Progress</span>
+            <strong id="percentage">50%</strong>
+        </div>
+
+        <div class="countdown">
+            <small>⏳ Time remaining to reach your target</small>
+            <h2 id="countdown">--:--:--</h2>
+        </div>
+
+        <div class="message" id="message"></div>
+
+    </div>
+
+    <div class="footer">
+        Made with 💜 | Login Hours Tracker
+    </div>
+
+</div>
+
+<script>
+let timer = null;
+let finishTimestamp = null;
+let totalTargetMinutes = 0;
+
+function calculateHours() {
+
+    clearInterval(timer);
+
+    const hours = Number(document.getElementById("hours").value);
+    const minutes = Number(document.getElementById("minutes").value);
+    const target = Number(document.getElementById("target").value);
+    const loginTime = document.getElementById("loginTime").value;
+
+    const error = document.getElementById("error");
+    const result = document.getElementById("result");
+
+    error.textContent = "";
+    result.style.display = "none";
+
+    if (
+        !Number.isFinite(hours) || !Number.isInteger(hours) ||
+        !Number.isFinite(minutes) || !Number.isInteger(minutes) ||
+        !Number.isFinite(target) ||
+        hours < 0 || minutes < 0 || minutes > 59 ||
+        !loginTime || target <= 0
+    ) {
+        error.textContent = "Please enter valid hours, minutes, target and login time.";
+        return;
+    }
+
+    const completedMinutes = (hours * 60) + minutes;
+    totalTargetMinutes = Math.round(target * 60);
+
+    if (completedMinutes > totalTargetMinutes) {
+        error.textContent = "Completed hours cannot exceed your daily target.";
+        return;
+    }
+
+    const remainingMinutes = totalTargetMinutes - completedMinutes;
+
+    // Read login time
+    const [loginHour, loginMinute] = loginTime.split(":").map(Number);
+
+    const now = new Date();
+    const loginDate = new Date(now);
+
+    loginDate.setHours(loginHour, loginMinute, 0, 0);
+
+    // If login time is later than current time, assume previous day
+    if (loginDate.getTime() > now.getTime()) {
+        loginDate.setDate(loginDate.getDate() - 1);
+    }
+
+    // Expected completion time
+    finishTimestamp = loginDate.getTime() + remainingMinutes * 60000;
+
+    // Display results
+    document.getElementById("completed").textContent =
+        formatDuration(completedMinutes);
+
+    document.getElementById("remaining").textContent =
+        formatDuration(remainingMinutes);
+
+    document.getElementById("dailyTarget").textContent =
+        formatDuration(totalTargetMinutes);
+
+    document.getElementById("finishTime").textContent =
+        new Date(finishTimestamp).toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+
+    document.getElementById("percentage").textContent =
+        Math.round((completedMinutes / totalTargetMinutes) * 100) + "%";
+
+    document.getElementById("progress").style.width =
+        (completedMinutes / totalTargetMinutes * 100) + "%";
+
+    result.style.display = "block";
+
+    updateCountdown();
+    timer = setInterval(updateCountdown, 1000);
+}
+
+function formatDuration(totalMinutes) {
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    return `${h}h ${m}m`;
+}
+
+function updateCountdown() {
+
+    const now = Date.now();
+    const remaining = Math.max(0, finishTimestamp - now);
+
+    const h = Math.floor(remaining / 3600000);
+    const m = Math.floor((remaining % 3600000) / 60000);
+    const s = Math.floor((remaining % 60000) / 1000);
+
+    document.getElementById("countdown").textContent =
+        `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+
+    const message = document.getElementById("message");
+
+    if (remaining === 0) {
+        message.textContent = "🎉 Congratulations! Your daily target is complete!";
+        document.getElementById("progress").style.width = "100%";
+        document.getElementById("percentage").textContent = "100%";
+        clearInterval(timer);
+    } else {
+        message.textContent = "Keep going! You're doing great. 💪";
+    }
+}
+
+// Automatically set current time when opening the app
+function setCurrentTime() {
+    const now = new Date();
+    document.getElementById("loginTime").value =
+        String(now.getHours()).padStart(2, "0") + ":" +
+        String(now.getMinutes()).padStart(2, "0");
+}
+
+setCurrentTime();
+</script>
+
+</body>
+</html>
